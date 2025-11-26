@@ -1,13 +1,63 @@
 import socket
-HOST = "192.168.137.1"
+import threading
+import os
+import time
+HOST = "192.168.1.190"
 PORT = 5000
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((HOST,PORT))
-while True:
+global message
+global data
+global history
+history = ""
+message = ""
+data = ""
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+
+print("Connection established: type \\q to end convo")
+
+"""while True:
     message = input("message: ")
     client.sendall(message.encode())
     data = client.recv(1024)
-    if data.decode() == "12345554!":
-        break
-    print("SENT:", data.decode())
+    if message == "\\q" or data.decode() == "12345554!":
+        break"""
+
+def out():
+    while True:
+        message = input("message: ")
+        history += ("\nyou: " + message)
+        client.sendall(message.encode())
+        if message == "\\q" or data == "12345554!":
+            break
+
+def inn():
+    global history
+    while True:
+        data = client.recv(1024).decode()
+        history+=("\nthem:" + data)
+        if message == "\\q" or data == "12345554!":
+            break
+def printhist():
+    global history
+    while True:
+        clear()
+        print(history)
+        time.sleep(0.5)
+        clear()
+        print(history+"\nmessage: ")
+
+sending = threading.Thread(target=out)
+recieving = threading.Thread(target=inn)
+printing = threading.Thread(target=printhist)
+
+printing.start()
+sending.start()
+recieving.start()
+
+printing.join()
+sending.join()
+recieving.join()
+
 client.close()
