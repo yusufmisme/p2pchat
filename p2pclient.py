@@ -27,28 +27,38 @@ print("Connection established: type \\q to end convo")
     if message == "\\q" or data.decode() == "12345554!":
         break"""
 
-def inn():
+def out():
     global mes
+    global history
+    global data
     while True:
         addto  = sys.stdin.read(1)
         mes += addto
         if addto == '\n':
             client.sendall(mes.encode())
+            history+="\nyou: "+mes
+            mes=""
+        if mes == "\\q" or data == "12345554!":
+            break
 
-def out():
+def inn():
     global history
+    global data
     while True:
         data = client.recv(1024).decode()
         history+=("\nthem:" + data)
-        if message == "\\q" or data == "12345554!":
+        if mes == "\\q" or data == "12345554!":
             break
 def printhist():
     global history
     global mes
+    global data
     while True:
-        time.sleep(0.5)
+        time.sleep(1)
         clear()
-        print(history+"\nmessage: "+mes)
+        print(history+"\nmessage: "+"hi")
+        if mes == "\\q" or data == "12345554!":
+            break
 
 sending = threading.Thread(target=out)
 recieving = threading.Thread(target=inn)
