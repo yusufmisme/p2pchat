@@ -27,14 +27,48 @@ print("Connection established: type \\q to end convo")
     if message == "\\q" or data.decode() == "12345554!":
         break"""
 
+if os.name == "nt":
+    back = [b'\x08']
+    enter = [b'\r']
+    import msvcrt
+    def key():
+        if msvcrt.kbhit():
+            return msvcrt.getch()
+        else:
+            return None
+else:
+    import termios, tty, fcntl
+    back = [b'\x7f', b'\b']
+    enter = [b'\n']
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd) # sets terminal in raw mode ig
+    tty.setcbreak(fd)
+    fcntl.fcntl(fd, fcntl.F_SETFL,
+                fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
+    
+    def key():
+        try:
+            return sys.stdin.read(1)
+        except:
+            return None
+
+
+
+
+
+
+
 def out():
-    global mes
-    global history
-    global data
     while True:
-        addto  = sys.stdin.read(1)
-        mes += addto
-        if addto == '\n':
+        global mes
+        global history
+        global data
+        addto  = key()
+        if addto:
+            mes += addto.decode()
+        if addto in back:
+            mes=mes[:len(mes)-2]
+        if addto in enter:
             client.sendall(mes.encode())
             history+="\nyou: "+mes
             mes=""
@@ -50,13 +84,15 @@ def inn():
         if mes == "\\q" or data == "12345554!":
             break
 def printhist():
-    global history
-    global mes
-    global data
     while True:
-        time.sleep(1)
-        clear()
-        print(history+"\nmessage: "+"hi")
+        global history
+        global mes
+        global data
+        time.sleep(0.25)
+        #clear()
+        #print(history+"\nmessage: "+mes)
+        sys.stdout.write('\r' + 'message: ' + mes)
+        sys.stdout.flush()
         if mes == "\\q" or data == "12345554!":
             break
 
