@@ -3,6 +3,7 @@ import threading
 import os
 import time
 import sys
+import subprocess
 
 HOST = "192.168.1.190"
 PORT = 5000
@@ -11,12 +12,15 @@ client.connect((HOST,PORT))
 global message
 global data
 global history
+global on
 history = ""
 message = ""
 data = ""
 mes = ""
+on = True
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
+    #subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
 
 print("Connection established: type \\q to end convo")
 
@@ -59,7 +63,8 @@ else:
 
 
 def out():
-    while True:
+    global on
+    while on:
         global mes
         global history
         global data
@@ -69,32 +74,34 @@ def out():
         if addto in back:
             mes=mes[:len(mes)-2]
         if addto in enter:
+            if mes == "\\q\n" or data == "12345554!":
+                client.sendall("12345554!".encode())
+                on = False
+                #sys.exit()
             client.sendall(mes.encode())
             history+="\nyou: "+mes
             mes=""
-        if mes == "\\q" or data == "12345554!":
-            break
 
 def inn():
     global history
     global data
-    while True:
+    global on
+    while on:
         data = client.recv(1024).decode()
-        history+=("\nthem:" + data)
-        if mes == "\\q" or data == "12345554!":
-            break
+        history+=("\nthem: " + data)
 def printhist():
-    while True:
+    global on
+    while on:
         global history
         global mes
         global data
         time.sleep(0.25)
         #clear()
         #print(history+"\nmessage: "+mes)
-        sys.stdout.write('\r' + 'message: ' + mes)
+        #print("\x1b[H\x1b[2J", end="")
+        sys.stdout.write("\033[H\033[J")   
+        sys.stdout.write(history+'\n' + 'message: ' + mes)
         sys.stdout.flush()
-        if mes == "\\q" or data == "12345554!":
-            break
 
 sending = threading.Thread(target=out)
 recieving = threading.Thread(target=inn)
