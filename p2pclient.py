@@ -4,6 +4,10 @@ import os
 import time
 import sys
 import subprocess
+"""ip = input("type in the host ipv4 address (s to select saved addresses): ")
+if ip.lower() == "s":
+    with open("save.txt", "a") as saved:
+        saved.write()"""
 
 HOST = "192.168.1.190"
 PORT = 5000
