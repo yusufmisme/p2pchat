@@ -4,15 +4,37 @@ import os
 import time
 import sys
 import subprocess
-"""ip = input("type in the host ipv4 address (s to select saved addresses): ")
-if ip.lower() == "s":
-    with open("save.txt", "a") as saved:
-        saved.write()"""
 
-HOST = "192.168.1.190"
 PORT = 5000
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((HOST,PORT))
+saved = open("save.txt", 'a+')
+while True:
+    ip = input("type in the host ipv4 address (s to select saved addresses): ")
+    if ip.lower() == "s":    
+        print(saved.read())
+        indx = 0
+        indx2 = 0
+        amt = int(input("enter number of listed ip"))
+        for i in range(amt): #apparently there is a second parameter to find() :(
+            indx = ("x"*(indx+1)+saved.read()[indx+1:]).find("\n")
+        for i in range(amt)+1:
+            indx2 = ("x"*(indx2+1)+saved.read()[indx2+1:]).find("\n")
+        ip = saved.read()[indx:indx2]
+    HOST = ip
+    try:
+        client.connect((HOST,PORT))
+        False
+    except:
+        print("enter a valid ipv4 address")
+        pass
+if input("save this ip address? y/n: ").lower() == "y" and ip not in saved.read():
+        with open("save.txt", "a") as saved:
+            saved.write(saved.read().count("\n")+1+"-"+ip+"\n")
+
+
+#HOST = "192.168.1.190"
+
+#client.connect((HOST,PORT))
 global message
 global data
 global history
