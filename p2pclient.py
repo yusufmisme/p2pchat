@@ -19,17 +19,17 @@ while True:
             indx = ("x"*(indx+1)+saved.read()[indx+1:]).find("\n")
         for i in range(amt)+1:
             indx2 = ("x"*(indx2+1)+saved.read()[indx2+1:]).find("\n")
-        ip = saved.read()[indx:indx2]
+        ip = saved.read()[indx+2:indx2]
     HOST = ip
     try:
         client.connect((HOST,PORT))
-        False
+        break
     except:
         print("enter a valid ipv4 address")
         pass
 if input("save this ip address? y/n: ").lower() == "y" and ip not in saved.read():
-        with open("save.txt", "a") as saved:
-            saved.write(saved.read().count("\n")+1+"-"+ip+"\n")
+    saved.write(str(saved.read().count("\n")+1)+"-"+ip+"\n")
+    saved.close()
 
 
 #HOST = "192.168.1.190"
