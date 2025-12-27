@@ -10,16 +10,19 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 saved = open("save.txt", 'a+')
 while True:
     ip = input("type in the host ipv4 address (s to select saved addresses): ")
-    if ip.lower() == "s":    
-        print(saved.read())
+    if ip.lower() == "s":  
+        saved.seek(0)  
+        ips = saved.read()
+        print("\n"+ips)
         indx = 0
         indx2 = 0
-        amt = int(input("enter number of listed ip"))
-        for i in range(amt): #apparently there is a second parameter to find() :(
-            indx = ("x"*(indx+1)+saved.read()[indx+1:]).find("\n")
-        for i in range(amt)+1:
-            indx2 = ("x"*(indx2+1)+saved.read()[indx2+1:]).find("\n")
-        ip = saved.read()[indx+2:indx2]
+        amt = int(input("enter number of listed ip: "))
+        for i in range(amt-1): #apparently there is a second parameter to find() :(
+            indx = ("x"*(indx+1)+ips[indx+1:]).find("\n")
+        for i in range(amt):
+            indx2 = ("x"*(indx2+1)+ips[indx2+1:]).find("\n")
+
+        ip = ips[indx+3:indx2]
     HOST = ip
     try:
         client.connect((HOST,PORT))
