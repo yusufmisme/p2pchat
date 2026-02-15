@@ -50,3 +50,7 @@ python p2pclient.py
 
 - Current implementation supports one host and one client connection.
 - `p2pclient.py` reads/writes `save.txt` using a relative path, so run it from `src/project p2p` (or adjust paths in code).
+
+## License
+
+MIT License (c) 2026 yusufmisme
