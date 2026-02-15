@@ -1,10 +1,4 @@
-import socket
-import socket
-import threading
-import os
-import time
-import sys
-import subprocess
+import socket, threading, os, time, sys, subprocess
 
 HOST = socket.gethostbyname(socket.gethostname())
 PORT = 5000
